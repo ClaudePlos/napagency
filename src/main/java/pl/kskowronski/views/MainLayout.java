@@ -21,6 +21,7 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import java.util.Optional;
 import pl.kskowronski.data.entity.User;
+import pl.kskowronski.data.entity.egeria.global.NapUser;
 import pl.kskowronski.security.AuthenticatedUser;
 import pl.kskowronski.views.about.AboutView;
 import pl.kskowronski.views.chat.ChatView;
@@ -147,20 +148,22 @@ public class MainLayout extends AppLayout {
         Footer layout = new Footer();
         layout.addClassNames("flex", "items-center", "my-s", "px-m", "py-xs");
 
-        Optional<User> maybeUser = authenticatedUser.get();
+        Optional<NapUser> maybeUser = authenticatedUser.get();
         if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
-
-            Avatar avatar = new Avatar(user.getName(), user.getProfilePictureUrl());
+            NapUser user = maybeUser.get();
+            int colorIndex = (int) ((Math.random() * (20 - 1)) + 1);
+            Avatar avatar = new Avatar(!user.getUsername().isEmpty()? user.getUsername() : user.getUsername());
+            avatar.setColorIndex(colorIndex);
             avatar.addClassNames("me-xs");
 
             ContextMenu userMenu = new ContextMenu(avatar);
             userMenu.setOpenOnClick(true);
-            userMenu.addItem("Logout", e -> {
+            userMenu.addItem("Wyloguj", e -> {
                 authenticatedUser.logout();
             });
 
-            Span name = new Span(user.getName());
+
+            Span name = new Span(!user.getUsername().isEmpty()? user.getUsername() : user.getUsername());
             name.addClassNames("font-medium", "text-s", "text-secondary");
 
             layout.add(avatar, name);

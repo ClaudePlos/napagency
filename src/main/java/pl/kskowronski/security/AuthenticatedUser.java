@@ -11,13 +11,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 import pl.kskowronski.data.entity.User;
-import pl.kskowronski.data.service.UserRepository;
+import pl.kskowronski.data.entity.egeria.global.NapUser;
+import pl.kskowronski.data.service.egeria.global.NapUserRepo;
 
 @Component
 public class AuthenticatedUser {
 
     @Autowired
-    private UserRepository userRepository;
+    private NapUserRepo napUserRepo;
 
     private Optional<Authentication> getAuthentication() {
         SecurityContext context = SecurityContextHolder.getContext();
@@ -25,8 +26,8 @@ public class AuthenticatedUser {
                 .filter(authentication -> !(authentication instanceof AnonymousAuthenticationToken));
     }
 
-    public Optional<User> get() {
-        return getAuthentication().map(authentication -> userRepository.findByUsername(authentication.getName()));
+    public Optional<NapUser> get() {
+        return getAuthentication().map(authentication -> napUserRepo.findByUsername(authentication.getName()).get());
     }
 
     public void logout() {
