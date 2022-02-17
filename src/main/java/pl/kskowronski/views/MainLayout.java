@@ -24,6 +24,7 @@ import pl.kskowronski.data.entity.User;
 import pl.kskowronski.data.entity.egeria.global.NapUser;
 import pl.kskowronski.security.AuthenticatedUser;
 import pl.kskowronski.views.about.AboutView;
+import pl.kskowronski.views.agency.AgencyView;
 import pl.kskowronski.views.chat.ChatView;
 import pl.kskowronski.views.helloworld.HelloWorldView;
 
@@ -135,6 +136,7 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
+                new MenuItemInfo("Agencja", "la la-globe", AgencyView.class), //
                 new MenuItemInfo("Hello World", "la la-globe", HelloWorldView.class), //
 
                 new MenuItemInfo("About", "la la-file", AboutView.class), //
