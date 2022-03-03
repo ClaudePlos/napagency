@@ -14,6 +14,7 @@ public interface ClientRepo  extends JpaRepository<Client, Integer> {
     // @Query("SELECT c FROM Client c WHERE upper(c.kldNazwa) like upper(:likeFilter) and c.klKod in "
 
     Optional<Client> getClientByKlKod(Integer klKod);
+
     @Query(value = "SELECT * from napwfv_kontrahenci " +
             "where upper(kld_nazwa) like upper('%'||:likeFilter||'%') " +
             "and kl_kod in (select ck_kl_kod from CKK_CECHY_KLIENTOW where ck_ce_id = 100722)", nativeQuery = true)
