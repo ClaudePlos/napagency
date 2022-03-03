@@ -13,7 +13,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-@CssImport("./styles/views/components/period-layout.css")
 public class PeriodLayout extends HorizontalLayout {
 
     private transient MapperDate mapperDate = new MapperDate();

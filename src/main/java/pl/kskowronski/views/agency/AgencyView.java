@@ -1,15 +1,15 @@
 package pl.kskowronski.views.agency;
 
-
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.checkerframework.checker.units.qual.C;
 import pl.kskowronski.data.entity.egeria.ckk.Client;
-import pl.kskowronski.data.entity.egeria.global.NapUser;
 import pl.kskowronski.data.service.egeria.ckk.ClientService;
+import pl.kskowronski.data.service.egeria.ek.ZatrudnienieService;
 import pl.kskowronski.views.MainLayout;
+import pl.kskowronski.views.componets.PeriodLayout;
 
 import javax.annotation.security.RolesAllowed;
 
@@ -19,13 +19,17 @@ import javax.annotation.security.RolesAllowed;
 public class AgencyView extends VerticalLayout {
 
     private ClientService clientService;
+    private ZatrudnienieService zatrudnienieService;
 
-    public AgencyView(ClientService clientService) {
+    private PeriodLayout periodText = new PeriodLayout(1);
+
+    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService) {
         this.clientService = clientService;
+        this.zatrudnienieService = zatrudnienieService;
 
         var listAgency = getSelectAgency();
 
-        add(listAgency);
+        add(new HorizontalLayout(periodText, listAgency));
     }
 
     private ComboBox<Client> getSelectAgency() {
@@ -34,12 +38,15 @@ public class AgencyView extends VerticalLayout {
         selectAgency.setItemLabelGenerator(Client::getKldNazwa);
         selectAgency.setLabel("Agencja");
         selectAgency.addValueChangeListener( e -> {
-            generateListWorkersForAgency();
+            generateListWorkersForAgency(e.getValue().getKlKod() );
         });
         return selectAgency;
     }
 
-    private void generateListWorkersForAgency() {
+    private void generateListWorkersForAgency( Integer klKodAgency ) {
+
+        var workers = zatrudnienieService.getWorkersEmployedOnTheAgency( periodText.getPeriod(), Long.valueOf("0"), klKodAgency);
+        System.out.println(workers);
 
     }
 
