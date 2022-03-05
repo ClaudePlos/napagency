@@ -10,7 +10,7 @@ import java.util.List;
 public interface HarmIndividualRepo extends JpaRepository<HarmIndividual, Integer> {
 
 
-    @Query(value = "select h from HarmIndividual h where h.hiPrcId = :prcId and to_char(h.hiDay,'YYYY-MM') = :period")
+    @Query(value = "select h from HarmIndividual h where h.hiPrcId = :prcId and to_char(h.hiDate,'YYYY-MM') = :period")
     List<HarmIndividual> getHarmForWorker(@Param("prcId") Integer prcId, @Param("period") String period);
 
 }

@@ -24,7 +24,7 @@ public class HarmIndividual {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "HI_DZIEN")
-    private Date hiDay;
+    private Date hiDate;
 
     @Column(name = "HI_GODZINY")
     private Integer hiHoursPlan;
@@ -37,6 +37,12 @@ public class HarmIndividual {
 
     @Column(name = "HI_RODZAJ")
     private String hiType;
+
+    @Transient
+    private String absenceName;
+
+    @Transient
+    private String day;
 
     public Integer getHiId() {
         return hiId;
@@ -70,14 +76,6 @@ public class HarmIndividual {
         this.hiRdaId = hiRdaId;
     }
 
-    public Date getHiDay() {
-        return hiDay;
-    }
-
-    public void setHiDay(Date hiDay) {
-        this.hiDay = hiDay;
-    }
-
     public Integer getHiHoursPlan() {
         return hiHoursPlan;
     }
@@ -108,5 +106,29 @@ public class HarmIndividual {
 
     public void setHiType(String hiType) {
         this.hiType = hiType;
+    }
+
+    public String getAbsenceName() {
+        return absenceName;
+    }
+
+    public void setAbsenceName(String absenceName) {
+        this.absenceName = absenceName;
+    }
+
+    public Date getHiDate() {
+        return hiDate;
+    }
+
+    public void setHiDate(Date hiDate) {
+        this.hiDate = hiDate;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 }

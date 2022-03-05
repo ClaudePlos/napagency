@@ -42,6 +42,9 @@ public class AgencyView extends VerticalLayout {
 
         listAgency = getSelectAgency();
 
+        this.setHeight("100%");
+        grid.setHeightFull();
+
         grid.addColumn(Pracownik::getPrcNumer).setHeader("Numer");
         grid.addColumn(Pracownik::getPrcNazwisko).setHeader("Nazwisko");
         grid.addColumn(Pracownik::getPrcImie).setHeader("Imie");

@@ -11,9 +11,11 @@ import java.util.List;
 public class HarmIndividualService extends CrudService<HarmIndividual, Integer> {
 
     private HarmIndividualRepo repo;
+    private TypeOfAbsenceRepo typeOfAbsenceRepo;
 
-    public HarmIndividualService(@Autowired HarmIndividualRepo repo) {
+    public HarmIndividualService(@Autowired HarmIndividualRepo repo, TypeOfAbsenceRepo typeOfAbsenceRepo) {
         this.repo = repo;
+        this.typeOfAbsenceRepo = typeOfAbsenceRepo;
     }
 
     @Override
@@ -23,9 +25,13 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
 
 
 
-
     public List<HarmIndividual> getHarmForWorker(Integer prcId, String period){
-       return repo.getHarmForWorker(prcId, period);
+       List<HarmIndividual> harm = repo.getHarmForWorker(prcId, period);
+       harm.stream().forEach( item -> {
+           item.setAbsenceName( item.getHiRdaId() != null ? typeOfAbsenceRepo.findById( item.getHiRdaId() ).get().getRdaName() : null  );
+           item.setDay( (item.getHiDate().getDate()) + "");
+       });
+       return harm;
     }
 
 }
