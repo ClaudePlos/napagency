@@ -8,7 +8,6 @@ import java.util.Date;
 @Table(name = "EK_HARMONOGRAMY_INDYWIDUALNE")
 public class HarmIndividual {
 
-
     @Id
     @Column(name = "HI_ID")
     private Integer hiId;

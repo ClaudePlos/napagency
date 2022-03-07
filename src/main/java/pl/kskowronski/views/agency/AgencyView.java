@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.kskowronski.data.entity.egeria.ckk.Client;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
@@ -21,6 +22,7 @@ import javax.annotation.security.RolesAllowed;
 
 @PageTitle("Agency")
 @Route(value = "agency", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 @RolesAllowed("user")
 public class AgencyView extends VerticalLayout {
 
@@ -70,7 +72,6 @@ public class AgencyView extends VerticalLayout {
         ComboBox<Client> selectAgency = new ComboBox<>();
         selectAgency.setItems( query -> clientService.findAllAgency("%" + query.getFilter().orElse("") + "%",query.getPage(),query.getPageSize()));
         selectAgency.setItemLabelGenerator(Client::getKldNazwa);
-        selectAgency.setLabel("Agencja");
         selectAgency.addValueChangeListener( e -> {
             generateListWorkersForAgency();
         });
