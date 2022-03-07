@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @PageTitle("AgencyForLoginView")
-@Route(value = "agencyforlogin", layout = MainLayout.class)
+@Route(value = "agforlogin", layout = MainLayout.class)
 @RolesAllowed("user")
 public class AgencyForLoginView extends Div {
 
@@ -52,6 +52,7 @@ public class AgencyForLoginView extends Div {
         crud.setHeightFull();
 
         setupGrid();
+        setupDataProvider();
 
         add( new HorizontalLayout(crud));
     }
