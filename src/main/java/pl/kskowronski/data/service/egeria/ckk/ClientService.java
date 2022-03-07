@@ -34,4 +34,8 @@ public class ClientService extends CrudService<Client, Integer> {
         return list;
     }
 
+    public Client findByKlKod( Integer klKod){
+        return repo.findByKlKod(klKod);
+    }
+
 }

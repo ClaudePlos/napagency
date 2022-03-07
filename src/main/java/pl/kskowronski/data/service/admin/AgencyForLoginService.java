@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.vaadin.artur.helpers.CrudService;
 import pl.kskowronski.data.entity.admin.AgencyForLogin;
 
+import java.util.List;
+
 @Service
 public class AgencyForLoginService extends CrudService<AgencyForLogin, Integer> {
 
@@ -17,6 +19,19 @@ public class AgencyForLoginService extends CrudService<AgencyForLogin, Integer> 
     @Override
     protected AgencyForLoginRepo getRepository() {
         return repo;
+    }
+
+    public List<AgencyForLogin> findAll() {
+        List<AgencyForLogin> list = repo.findAll();
+        return list;
+    }
+
+    public void save(AgencyForLogin agencyForLogin) {
+        repo.save(agencyForLogin);
+    }
+
+    public void deleteById(Integer id) {
+        repo.deleteById(id);
     }
 
 }

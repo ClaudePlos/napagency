@@ -19,4 +19,6 @@ public interface ClientRepo  extends JpaRepository<Client, Integer> {
             "where upper(kld_nazwa) like upper('%'||:likeFilter||'%') " +
             "and kl_kod in (select ck_kl_kod from CKK_CECHY_KLIENTOW where ck_ce_id = 100722)", nativeQuery = true)
     Page<Client> findAllWithPagination(String likeFilter, Pageable pageable);
+
+    Client findByKlKod( Integer klKod);
 }
