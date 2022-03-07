@@ -3,22 +3,29 @@ package pl.kskowronski.views.agency;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import pl.kskowronski.data.entity.egeria.ckk.Client;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
+import pl.kskowronski.data.service.admin.AgencyForLoginService;
 import pl.kskowronski.data.service.egeria.ckk.ClientService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HarmIndividualService;
 import pl.kskowronski.data.service.egeria.ek.ZatrudnienieService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
+import pl.kskowronski.data.service.egeria.global.NapUserService;
 import pl.kskowronski.views.MainLayout;
 import pl.kskowronski.views.componets.PeriodLayout;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.ArrayList;
+import java.util.List;
 
 @PageTitle("Agency")
 @Route(value = "agency", layout = MainLayout.class)
@@ -33,15 +40,25 @@ public class AgencyView extends VerticalLayout {
     private PeriodLayout periodText = new PeriodLayout(1);
     private Grid<Pracownik> grid = new Grid<>(Pracownik.class, false);
     private ComboBox<Client> listAgency;
+    private List<Client> agencyList = new ArrayList<>();
 
     @Autowired
     private WorkCardView workCardView;
 
-    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService) {
+    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, NapUserService napUserService
+            , HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, AgencyForLoginService agencyForLoginService) {
         this.clientService = clientService;
         this.zatrudnienieService = zatrudnienieService;
         this.harmIndividualService = harmIndividualService;
         this.workCardView = new WorkCardView(this.harmIndividualService, hoursInDayService);
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user  = napUserService.findByUsername(userDetails.getUsername());
+        var agencyForUser = agencyForLoginService.findAllForUser(user.get().getPrcId());
+        agencyForUser.stream().forEach( item -> {
+            Client client = clientService.findByKlKod(item.getKlKod());
+            agencyList.add(client);
+        });
 
         listAgency = getSelectAgency();
 
@@ -65,12 +82,12 @@ public class AgencyView extends VerticalLayout {
             generateListWorkersForAgency();
         });
 
-        add(new HorizontalLayout(periodText, listAgency), grid);
+        add(new HorizontalLayout(periodText, new Label("Agencja:"), listAgency), grid);
     }
 
     private ComboBox<Client> getSelectAgency() {
         ComboBox<Client> selectAgency = new ComboBox<>();
-        selectAgency.setItems( query -> clientService.findAllAgency("%" + query.getFilter().orElse("") + "%",query.getPage(),query.getPageSize()));
+        selectAgency.setItems( agencyList );
         selectAgency.setItemLabelGenerator(Client::getKldNazwa);
         selectAgency.addValueChangeListener( e -> {
             generateListWorkersForAgency();

@@ -26,6 +26,11 @@ public class AgencyForLoginService extends CrudService<AgencyForLogin, Integer> 
         return list;
     }
 
+    public List<AgencyForLogin> findAllForUser( Integer userId) {
+        List<AgencyForLogin> list = repo.findAllForUser( userId );
+        return list;
+    }
+
     public void save(AgencyForLogin agencyForLogin) {
         repo.save(agencyForLogin);
     }
