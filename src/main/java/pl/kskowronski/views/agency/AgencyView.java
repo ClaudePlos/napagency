@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.kskowronski.data.entity.egeria.ckk.Client;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
 import pl.kskowronski.data.service.egeria.ckk.ClientService;
-import pl.kskowronski.data.service.egeria.ek.HarmIndividualService;
+import pl.kskowronski.data.service.egeria.ek.graphics.HarmIndividualService;
 import pl.kskowronski.data.service.egeria.ek.ZatrudnienieService;
+import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
 import pl.kskowronski.views.MainLayout;
 import pl.kskowronski.views.componets.PeriodLayout;
 
@@ -34,11 +35,11 @@ public class AgencyView extends VerticalLayout {
     @Autowired
     private WorkCardView workCardView;
 
-    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, HarmIndividualService harmIndividualService) {
+    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService) {
         this.clientService = clientService;
         this.zatrudnienieService = zatrudnienieService;
         this.harmIndividualService = harmIndividualService;
-        this.workCardView = new WorkCardView(this.harmIndividualService);
+        this.workCardView = new WorkCardView(this.harmIndividualService, hoursInDayService);
 
         listAgency = getSelectAgency();
 

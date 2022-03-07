@@ -1,10 +1,10 @@
 /* frontend/theme/[my-theme]/components/vaadin-grid.css */
 
-.high-rating {
+.ws {
     background-color: #b1ffb7;
 }
 
-.low-rating {
+.sw {
     background-color: #ffd9d9;
 }
 

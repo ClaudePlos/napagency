@@ -1,7 +1,7 @@
-package pl.kskowronski.data.service.egeria.ek;
+package pl.kskowronski.data.service.egeria.ek.graphics;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.kskowronski.data.entity.egeria.ek.TypeOfAbsence;
+import pl.kskowronski.data.entity.egeria.ek.graphics.TypeOfAbsence;
 
 
 public interface TypeOfAbsenceRepo  extends JpaRepository<TypeOfAbsence, Integer> {

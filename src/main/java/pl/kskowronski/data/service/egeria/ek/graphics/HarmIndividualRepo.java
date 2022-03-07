@@ -1,9 +1,9 @@
-package pl.kskowronski.data.service.egeria.ek;
+package pl.kskowronski.data.service.egeria.ek.graphics;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import pl.kskowronski.data.entity.egeria.ek.HarmIndividual;
+import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 
 import java.util.List;
 

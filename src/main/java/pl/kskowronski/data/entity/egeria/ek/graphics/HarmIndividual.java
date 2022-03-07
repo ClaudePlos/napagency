@@ -1,4 +1,4 @@
-package pl.kskowronski.data.entity.egeria.ek;
+package pl.kskowronski.data.entity.egeria.ek.graphics;
 
 
 import javax.persistence.*;
