@@ -9,7 +9,9 @@ import pl.kskowronski.data.entity.egeria.global.NapUser;
 import java.util.Optional;
 
 public interface NapUserRepo extends JpaRepository<NapUser, Integer>  {
-    public Optional<NapUser> findByUsername(String username);
+
+    @Query("SELECT u FROM NapUser u WHERE u.username = :username")
+    Optional<NapUser> findByUsernamePG(String username);
 
     @Query("SELECT u FROM NapUser u WHERE upper(u.username) like upper(:likeFilter)")
     Page<NapUser> findAllWithPagination(String likeFilter, Pageable pageable);

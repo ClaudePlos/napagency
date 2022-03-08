@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        NapUser user = napUserRepo.findByUsername(username).get();
+        NapUser user = napUserRepo.findByUsernamePG(username).get();
         if (user == null) {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {

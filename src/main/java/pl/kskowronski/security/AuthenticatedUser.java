@@ -27,7 +27,7 @@ public class AuthenticatedUser {
     }
 
     public Optional<NapUser> get() {
-        return getAuthentication().map(authentication -> napUserRepo.findByUsername(authentication.getName()).get());
+        return getAuthentication().map(authentication -> napUserRepo.findByUsernamePG(authentication.getName()).get());
     }
 
     public void logout() {

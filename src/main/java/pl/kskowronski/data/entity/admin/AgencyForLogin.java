@@ -90,9 +90,12 @@ public class AgencyForLogin {
 
     public void setClient(Client client) {
         this.client = client;
-        this.klKod = client.getKlKod();
-        if (this.agencyName == null) {
-            this.agencyName = client.getKldNazwa();
+        if ( client != null){
+            this.klKod = client.getKlKod();
+            if (this.agencyName == null) {
+                this.agencyName = client.getKldNazwa();
+            }
         }
+
     }
 }

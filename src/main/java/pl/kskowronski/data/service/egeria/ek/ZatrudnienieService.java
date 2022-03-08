@@ -47,7 +47,7 @@ public class ZatrudnienieService extends CrudService<Zatrudnienie, Integer> {
 
 
     public List<Pracownik> getWorkersEmployedOnTheAgency( String okres, Long typeContract, Integer klKodAgency ){
-        consolidationService.setConsolidateCompany();
+        //consolidationService.setConsolidateCompany();
         List<Pracownik> listaAktPracNaSk = new ArrayList<Pracownik>();
         String sql = "select distinct prc_id, prc_numer, prc_nazwisko, prc_imie, prc_pesel, zat_wymiar, zat_status\n" +
                 "from ek_zatrudnienie, ek_pracownicy\n";

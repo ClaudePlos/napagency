@@ -19,6 +19,7 @@ import pl.kskowronski.data.service.egeria.ckk.ClientService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HarmIndividualService;
 import pl.kskowronski.data.service.egeria.ek.ZatrudnienieService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
+import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.data.service.egeria.global.NapUserService;
 import pl.kskowronski.views.MainLayout;
 import pl.kskowronski.views.componets.PeriodLayout;
@@ -45,12 +46,12 @@ public class AgencyView extends VerticalLayout {
     @Autowired
     private WorkCardView workCardView;
 
-    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, NapUserService napUserService
+    public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, NapUserService napUserService, HoursInMonthService hoursInMonthService
             , HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, AgencyForLoginService agencyForLoginService) {
         this.clientService = clientService;
         this.zatrudnienieService = zatrudnienieService;
         this.harmIndividualService = harmIndividualService;
-        this.workCardView = new WorkCardView(this.harmIndividualService, hoursInDayService);
+        this.workCardView = new WorkCardView(this.harmIndividualService, hoursInDayService, hoursInMonthService);
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var user  = napUserService.findByUsername(userDetails.getUsername());

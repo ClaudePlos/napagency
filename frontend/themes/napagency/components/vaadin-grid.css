@@ -11,3 +11,7 @@
 .font-weight-bold {
     font-weight: bold;
 }
+
+.closePopUp {
+   display: grid;
+}

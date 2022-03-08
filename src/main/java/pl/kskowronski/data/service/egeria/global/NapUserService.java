@@ -24,7 +24,7 @@ public class NapUserService extends CrudService<NapUser, Integer> {
         return repo;
     }
 
-    public Optional<NapUser> findByUsername(String username){return repo.findByUsername(username);}
+    public Optional<NapUser> findByUsername(String username){return repo.findByUsernamePG(username);}
 
     public Optional<NapUser> findById(Integer prcId){ return repo.findById(prcId); }
 
