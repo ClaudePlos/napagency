@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface AgencyForLoginRepo extends JpaRepository<AgencyForLogin, Integer> {
 
-    @Query(value = "select a from AgencyForLogin a where a.userId = :prcId order by a.agencyName")
-    List<AgencyForLogin> findAllForUser(@Param("prcId") Integer prcId);
+    @Query(value = "select a from AgencyForLogin a where a.userId = :uzId order by a.agencyName")
+    List<AgencyForLogin> findAllForUser(@Param("uzId") Integer uzId);
 
 }

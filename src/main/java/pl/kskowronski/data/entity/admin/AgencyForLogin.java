@@ -78,7 +78,7 @@ public class AgencyForLogin {
 
     public void setNapUser(NapUser napUser) {
         this.napUser = napUser;
-        this.userId = napUser.getPrcId();
+        this.userId = napUser.getUzId();
         if (this.userName == null) {
             this.userName = napUser.getUsername();
         }

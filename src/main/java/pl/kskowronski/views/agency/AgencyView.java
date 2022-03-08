@@ -55,7 +55,7 @@ public class AgencyView extends VerticalLayout {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var user  = napUserService.findByUsername(userDetails.getUsername());
-        var agencyForUser = agencyForLoginService.findAllForUser(user.get().getPrcId());
+        var agencyForUser = agencyForLoginService.findAllForUser(user.get().getUzId());
         agencyForUser.stream().forEach( item -> {
             Client client = clientService.findByKlKod(item.getKlKod());
             agencyList.add(client);

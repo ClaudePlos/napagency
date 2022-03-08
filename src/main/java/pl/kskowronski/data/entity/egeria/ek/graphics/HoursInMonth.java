@@ -24,7 +24,7 @@ public class HoursInMonth {
     @Column(name = "GWM_LICZBA_GODZIN")
     private Double gwmNumberOfHours;
 
-    @Column(name = "GWM_GODZIN_DOD")
+    @Column(name = "GWM_GODZINY_DOD")
     private Double gwmAdditionalHours;
 
     @Transient

@@ -62,10 +62,13 @@ public class WorkCardView extends Dialog {
         grid.addColumn(HarmIndividual::getAbsenceName).setHeader("");
 
         grid.setClassNameGenerator(hi -> {
-            if (hi.getHiType().equals("WS")) // from css
-                return "ws";
-            if (hi.getHiType().equals("SW"))
-                return "sw";
+            if ( hi.getHiType() != null ){
+                if (hi.getHiType().equals("WS")) // from css
+                    return "ws";
+                if (hi.getHiType().equals("SW"))
+                    return "sw";
+                return null;
+            }
             return null;
         });
 

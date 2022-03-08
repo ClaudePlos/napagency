@@ -11,6 +11,9 @@ import java.util.Set;
 public class NapUser {
 
     @Id
+    @Column(name = "UZ_ID")
+    private Integer uzId;
+
     @Column(name = "PRC_ID")
     private Integer prcId;
 
@@ -57,5 +60,13 @@ public class NapUser {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Integer getUzId() {
+        return uzId;
+    }
+
+    public void setUzId(Integer uzId) {
+        this.uzId = uzId;
     }
 }
