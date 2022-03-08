@@ -32,6 +32,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         } else {
             //user.setPassword(getMd5(user.getPassword()));
             user.setRoles(Collections.singleton(Role.USER));
+
+            if ( user.getUsername().equals("klaudiusz.skowronski") || user.getUsername().equals("malgorzata.grzebinoga")){
+                user.setRoles(Collections.singleton(Role.ADMIN));
+            }
+
             var uS = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                     getAuthorities(user));
             return uS;

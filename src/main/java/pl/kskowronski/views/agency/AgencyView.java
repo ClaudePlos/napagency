@@ -31,7 +31,7 @@ import java.util.List;
 @PageTitle("Agency")
 @Route(value = "agency", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-@RolesAllowed("user")
+@RolesAllowed({"admin","user"})
 public class AgencyView extends VerticalLayout {
 
     private ClientService clientService;

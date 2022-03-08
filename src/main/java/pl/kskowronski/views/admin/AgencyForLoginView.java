@@ -26,7 +26,7 @@ import java.util.List;
 
 @PageTitle("AgencyForLoginView")
 @Route(value = "agforlogin", layout = MainLayout.class)
-@RolesAllowed("user")
+@RolesAllowed("admin")
 public class AgencyForLoginView extends Div {
 
     private NapUserService napUserService;
