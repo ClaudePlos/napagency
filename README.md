@@ -60,3 +60,9 @@ Once the Docker image is correctly built, you can test it locally using
 ```
 docker run -p 8080:8080 napagency:latest
 ```
+
+```
+k.skowronski: build on production 
+```
+sudo docker build -t napagency .
+sudo docker run -p 8184:8181 napagency:latest
