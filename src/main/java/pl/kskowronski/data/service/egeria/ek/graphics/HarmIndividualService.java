@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.vaadin.artur.helpers.CrudService;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -12,6 +13,8 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
 
     private HarmIndividualRepo repo;
     private TypeOfAbsenceRepo typeOfAbsenceRepo;
+
+    private List<HarmIndividual> harm = new ArrayList<>();
 
     public HarmIndividualService(@Autowired HarmIndividualRepo repo, TypeOfAbsenceRepo typeOfAbsenceRepo) {
         this.repo = repo;
@@ -26,7 +29,7 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
 
 
     public List<HarmIndividual> getHarmForWorker(Integer prcId, String period){
-       List<HarmIndividual> harm = repo.getHarmForWorker(prcId, period);
+       harm = repo.getHarmForWorker(prcId, period);
        harm.stream().forEach( item -> {
            item.setAbsenceName( item.getHiRdaId() != null ? typeOfAbsenceRepo.findById( item.getHiRdaId() ).get().getRdaName() : null  );
            item.setDay( (item.getHiDate().getDate()) + "");
@@ -34,4 +37,8 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
        return harm;
     }
 
+    public List<? extends HarmIndividual> getHarmForWorker() {
+
+        return harm;
+    }
 }

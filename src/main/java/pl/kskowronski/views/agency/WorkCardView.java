@@ -4,13 +4,17 @@ package pl.kskowronski.views.agency;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.function.SerializableSupplier;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
+import org.vaadin.reports.PrintPreviewReport;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HoursInDay;
@@ -20,6 +24,7 @@ import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.views.componets.PeriodLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -39,7 +44,10 @@ public class WorkCardView extends Dialog {
     private Pracownik worker;
 
     private Label labNameWorker = new Label("");
-    private Button closePopUp = new Button("X");
+    private Button butClosePopUp = new Button("X");
+    //private Button butPrintPdf = new Button("Drukuj");
+    private List<HarmIndividual> harm = new ArrayList<>();
+    private HorizontalLayout hAnchor = new HorizontalLayout();
 
     public WorkCardView(HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, HoursInMonthService hoursInMonthService) {
         this.harmIndividualService = harmIndividualService;
@@ -91,7 +99,7 @@ public class WorkCardView extends Dialog {
             getHarmForWorker();
         });
 
-        var hClose = new HorizontalLayout( closePopUp );
+        var hClose = new HorizontalLayout( butClosePopUp );
         //hClose.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         //hClose.setAlignSelf(FlexComponent.Alignment.END);
         hClose.getElement().getStyle().set("position","absolute");
@@ -99,13 +107,18 @@ public class WorkCardView extends Dialog {
 
         hClose.setClassName("hClose");
         hClose.setWidth("100%");
-        closePopUp.addClickListener( e -> {
+        butClosePopUp.addClickListener( e -> {
             this.close();
         });
-        closePopUp.setClassName("closePopUp");
-        closePopUp.getStyle().set("margin-right", "auto");
+        butClosePopUp.setClassName("closePopUp");
+        butClosePopUp.getStyle().set("margin-right", "auto");
 
-        add(new HorizontalLayout(periodText, labNameWorker, hClose)
+//        butPrintPdf.addClickListener( e -> {
+//            printPdf();
+//        });
+
+
+        add(new HorizontalLayout(periodText, labNameWorker, hAnchor, hClose)
                 , new HorizontalLayout(grid, new VerticalLayout(gridHoursInDay, gridHoursInMonth))
         );
     }
@@ -113,20 +126,36 @@ public class WorkCardView extends Dialog {
     public void openView(Pracownik worker) {
         this.worker = worker;
         this.labNameWorker.setText(worker.getNazwImie());
+        hAnchor.removeAll();
         getHarmForWorker();
         this.open();
     }
 
     private void getHarmForWorker() {
-        List<HarmIndividual> harm =  harmIndividualService.getHarmForWorker(worker.getPrcId(), periodText.getPeriod() );
+        harm =  harmIndividualService.getHarmForWorker(worker.getPrcId(), periodText.getPeriod());
         grid.setItems(harm);
         var hoursInMonth = hoursInMonthService.findAllForPeriodAndPrcId(periodText.getPeriod(), worker.getPrcId());
         gridHoursInMonth.setItems(hoursInMonth);
+        generatePDF();
+    }
+
+    private void generatePDF() {
+        PrintPreviewReport<HarmIndividual> report = new PrintPreviewReport<>(HarmIndividual.class);
+        report.setItems(harm);
+        report.getReportBuilder().setTitle("Karta Pracy: " + labNameWorker.getText());
+        StreamResource pdf = report.getStreamResource("karta.pdf", harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.PDF);
+        Anchor anchor = new Anchor(pdf, "PDF");
+        anchor.setTarget("_blank");
+        hAnchor.add(anchor);
     }
 
     private void getHoursForDay( Integer hiId) {
         var hours = hoursInDayService.findAllByHiId( hiId );
         gridHoursInDay.setItems(hours);
+    }
+
+    private void printPdf(){
+        var pdf = new WorkCardPdf(harm);
     }
 
 }
