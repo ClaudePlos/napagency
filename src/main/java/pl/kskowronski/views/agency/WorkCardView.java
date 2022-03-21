@@ -1,6 +1,9 @@
 package pl.kskowronski.views.agency;
 
 
+import ar.com.fdvs.dj.domain.AutoText;
+import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+import ar.com.fdvs.dj.domain.constants.Font;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -24,6 +27,7 @@ import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.views.componets.PeriodLayout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +49,6 @@ public class WorkCardView extends Dialog {
 
     private Label labNameWorker = new Label("");
     private Button butClosePopUp = new Button("X");
-    //private Button butPrintPdf = new Button("Drukuj");
     private List<HarmIndividual> harm = new ArrayList<>();
     private HorizontalLayout hAnchor = new HorizontalLayout();
 
@@ -113,10 +116,6 @@ public class WorkCardView extends Dialog {
         butClosePopUp.setClassName("closePopUp");
         butClosePopUp.getStyle().set("margin-right", "auto");
 
-//        butPrintPdf.addClickListener( e -> {
-//            printPdf();
-//        });
-
 
         add(new HorizontalLayout(periodText, labNameWorker, hAnchor, hClose)
                 , new HorizontalLayout(grid, new VerticalLayout(gridHoursInDay, gridHoursInMonth))
@@ -126,12 +125,12 @@ public class WorkCardView extends Dialog {
     public void openView(Pracownik worker) {
         this.worker = worker;
         this.labNameWorker.setText(worker.getNazwImie());
-        hAnchor.removeAll();
         getHarmForWorker();
         this.open();
     }
 
     private void getHarmForWorker() {
+        hAnchor.removeAll();
         harm =  harmIndividualService.getHarmForWorker(worker.getPrcId(), periodText.getPeriod());
         grid.setItems(harm);
         var hoursInMonth = hoursInMonthService.findAllForPeriodAndPrcId(periodText.getPeriod(), worker.getPrcId());
@@ -140,9 +139,20 @@ public class WorkCardView extends Dialog {
     }
 
     private void generatePDF() {
-        PrintPreviewReport<HarmIndividual> report = new PrintPreviewReport<>(HarmIndividual.class);
+
+        PrintPreviewReport<HarmIndividual> report = new PrintPreviewReport<>();
         report.setItems(harm);
-        report.getReportBuilder().setTitle("Karta Pracy: " + labNameWorker.getText());
+        report.getReportBuilder()
+                .addAutoText("+", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200)
+                .setPrintBackgroundOnOddRows(true)
+                .setTitle("Karta Pracy: " + labNameWorker.getText() + " " + periodText.getPeriod())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").build())
+        ;
         StreamResource pdf = report.getStreamResource("karta.pdf", harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.PDF);
         Anchor anchor = new Anchor(pdf, "PDF");
         anchor.setTarget("_blank");
@@ -154,8 +164,5 @@ public class WorkCardView extends Dialog {
         gridHoursInDay.setItems(hours);
     }
 
-    private void printPdf(){
-        var pdf = new WorkCardPdf(harm);
-    }
 
 }
