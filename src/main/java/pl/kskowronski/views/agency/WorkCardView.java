@@ -4,16 +4,18 @@ package pl.kskowronski.views.agency;
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.function.SerializableSupplier;
+import ar.com.fdvs.dj.domain.Style;
+import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,6 @@ import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.views.componets.PeriodLayout;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,8 +117,13 @@ public class WorkCardView extends Dialog {
         butClosePopUp.setClassName("closePopUp");
         butClosePopUp.getStyle().set("margin-right", "auto");
 
+        Button butPDF = new Button("PDF");
+        butPDF.addClickListener( e -> {
+          WorkCardPdf repPdf = new WorkCardPdf();
+            repPdf.openPopUp(harm);
+        });
 
-        add(new HorizontalLayout(periodText, labNameWorker, hAnchor, hClose)
+        add(new HorizontalLayout(periodText, labNameWorker, hAnchor, butPDF, hClose)
                 , new HorizontalLayout(grid, new VerticalLayout(gridHoursInDay, gridHoursInMonth))
         );
     }
@@ -139,19 +145,22 @@ public class WorkCardView extends Dialog {
     }
 
     private void generatePDF() {
+        Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
+        Style groupStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
 
         PrintPreviewReport<HarmIndividual> report = new PrintPreviewReport<>();
         report.setItems(harm);
         report.getReportBuilder()
-                .addAutoText("+", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200)
+                .addAutoText("+", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, groupStyle)
                 .setPrintBackgroundOnOddRows(true)
                 .setTitle("Karta Pracy: " + labNameWorker.getText() + " " + periodText.getPeriod())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setStyle(headerStyle).setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setStyle(headerStyle).setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setStyle(headerStyle).setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setStyle(headerStyle).setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setStyle(headerStyle).setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").setStyle(headerStyle).build())
+
         ;
         StreamResource pdf = report.getStreamResource("karta.pdf", harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.PDF);
         Anchor anchor = new Anchor(pdf, "PDF");

@@ -179,6 +179,12 @@
             <version>4.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>ar.com.fdvs</groupId>
+            <artifactId>DynamicJasper-core-fonts</artifactId>
+            <version>1.0</version>
+        </dependency>
+
 
 
     </dependencies>
