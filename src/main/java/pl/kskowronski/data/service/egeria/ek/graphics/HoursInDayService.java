@@ -32,5 +32,13 @@ public class HoursInDayService extends CrudService<HoursInDay, Integer> {
         return hours;
     }
 
+    public List<HoursInDay> getMainHours(Integer hiId) {
+        var hours = repo.getMainHours( hiId ).get();
+        hours.stream().forEach( item -> {
+            item.setRgName( typeOfHoursRepo.findById( item.getGwdRgCode() ).get().getRgName() );
+        });
+        return hours;
+    }
+
 
 }

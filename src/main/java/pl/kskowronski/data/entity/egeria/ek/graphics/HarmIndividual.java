@@ -43,6 +43,12 @@ public class HarmIndividual {
     @Transient
     private String day;
 
+    @Transient
+    private String hhFrom ;
+
+    @Transient
+    private String hhTo;
+
     public Integer getHiId() {
         return hiId;
     }
@@ -129,5 +135,21 @@ public class HarmIndividual {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public String getHhFrom() {
+        return hhFrom;
+    }
+
+    public void setHhFrom(String hhFrom) {
+        this.hhFrom = hhFrom;
+    }
+
+    public String getHhTo() {
+        return hhTo;
+    }
+
+    public void setHhTo(String hhTo) {
+        this.hhTo = hhTo;
     }
 }

@@ -123,7 +123,8 @@ public class WorkCardView extends Dialog {
             repPdf.openPopUp(harm);
         });
 
-        add(new HorizontalLayout(periodText, labNameWorker, hAnchor, butPDF, hClose)
+        add(new HorizontalLayout(periodText, labNameWorker, hAnchor//, butPDF
+                        , hClose)
                 , new HorizontalLayout(grid, new VerticalLayout(gridHoursInDay, gridHoursInMonth))
         );
     }
@@ -160,7 +161,8 @@ public class WorkCardView extends Dialog {
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setStyle(headerStyle).setWidth(30).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setStyle(headerStyle).setWidth(30).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").setStyle(headerStyle).build())
-
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhFrom", String.class).setTitle("Od").setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhTo", String.class).setTitle("Do").setWidth(15).build())
         ;
         StreamResource pdf = report.getStreamResource("karta.pdf", harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.PDF);
         Anchor anchor = new Anchor(pdf, "PDF");

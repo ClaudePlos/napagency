@@ -14,4 +14,7 @@ public interface HoursInDayRepo extends JpaRepository<HoursInDay, Integer> {
     @Query("select h from HoursInDay h where h.gwdHiId = :gwdHiId order by h.hFrom")
     Optional<List<HoursInDay>> findAllByHiId(@Param("gwdHiId") Integer gwdHiId);
 
+    @Query("select h from HoursInDay h where h.gwdHiId = :gwdHiId and h.gwdRgCode = 'GD' order by h.hFrom")
+    Optional<List<HoursInDay>> getMainHours(@Param("gwdHiId") Integer gwdHiId);
+
 }
