@@ -68,10 +68,12 @@ public class WorkCardView extends Dialog {
 
         grid.addColumn(HarmIndividual::getHiType).setHeader("").setWidth("25px");
         grid.addColumn(HarmIndividual::getDay).setHeader("D").setWidth("25px");
-        grid.addColumn(HarmIndividual::getHiNameHarm).setHeader("Zmiana").setWidth("35px");
-        grid.addColumn(HarmIndividual::getHiHoursPlan).setHeader("Plan").setWidth("35px");
-        grid.addColumn(HarmIndividual::getHiHoursOverworked).setHeader("Wykonanie");
+        grid.addColumn(HarmIndividual::getHiNameHarm).setHeader("Zmiana").setWidth("45px");
+        grid.addColumn(HarmIndividual::getHiHoursPlan).setHeader("Plan").setWidth("30px");
+        grid.addColumn(HarmIndividual::getHiHoursOverworked).setWidth("30px").setHeader("Wyk.");
         grid.addColumn(HarmIndividual::getAbsenceName).setHeader("");
+        grid.addColumn(HarmIndividual::getHhFrom).setWidth("35px").setHeader("Od");
+        grid.addColumn(HarmIndividual::getHhTo).setWidth("35px").setHeader("Do");
 
         grid.setClassNameGenerator(hi -> {
             if ( hi.getHiType() != null ){

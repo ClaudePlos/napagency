@@ -78,6 +78,15 @@ public class AgencyView extends VerticalLayout {
         grid.addColumn(Pracownik::getPrcNazwisko).setHeader("Nazwisko");
         grid.addColumn(Pracownik::getPrcImie).setHeader("Imie");
         grid.addColumn(Pracownik::getPrcPesel).setHeader("Pesel");
+        grid.addComponentColumn( worker -> {
+            Label l = new Label();
+            final String[] skList = {""};
+            worker.getZatrudnienia().forEach( item -> {
+                skList[0] += item.getSkKod() + " ";
+            });
+            l.setText(skList[0]);
+            return l;
+        }).setHeader("MPK");
         grid.addComponentColumn(worker -> {
             Button viewWorkCard = new Button("Karta Pracy");
             viewWorkCard.addClickListener( e -> {

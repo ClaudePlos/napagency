@@ -7,6 +7,7 @@ import pl.kskowronski.data.MapperDate;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
 import pl.kskowronski.data.entity.egeria.ek.WymiarEtatu;
 import pl.kskowronski.data.entity.egeria.ek.Zatrudnienie;
+import pl.kskowronski.data.service.egeria.css.SKRepo;
 import pl.kskowronski.data.service.egeria.global.ConsolidationService;
 
 import javax.persistence.EntityManager;
@@ -27,9 +28,12 @@ public class ZatrudnienieService extends CrudService<Zatrudnienie, Integer> {
 
     private ZatrudnienieRepo repo;
 
-    public ZatrudnienieService(@Autowired ZatrudnienieRepo repo, ConsolidationService consolidationService) {
+    private SKRepo skRepo;
+
+    public ZatrudnienieService(@Autowired ZatrudnienieRepo repo, ConsolidationService consolidationService, SKRepo skRepo) {
         this.repo = repo;
         this.consolidationService = consolidationService;
+        this.skRepo = skRepo;
     }
 
     @Override
@@ -49,7 +53,7 @@ public class ZatrudnienieService extends CrudService<Zatrudnienie, Integer> {
     public List<Pracownik> getWorkersEmployedOnTheAgency( String okres, Long typeContract, Integer klKodAgency ){
         //consolidationService.setConsolidateCompany();
         List<Pracownik> listaAktPracNaSk = new ArrayList<Pracownik>();
-        String sql = "select distinct prc_id, prc_numer, prc_nazwisko, prc_imie, prc_pesel, zat_wymiar, zat_status\n" +
+        String sql = "select distinct prc_id, prc_numer, prc_nazwisko, prc_imie, prc_pesel, zat_wymiar, zat_status, zat_sk_id\n" +
                 "from ek_zatrudnienie, ek_pracownicy\n";
         sql += "where (COALESCE(zat_data_do, to_date('2099', 'YYYY')) >= to_date('" + okres + "', 'YYYY-MM')\n" +
                 "and zat_data_zmiany <= last_day(to_date('" + okres + "', 'YYYY-MM')))\n" +
@@ -78,6 +82,7 @@ public class ZatrudnienieService extends CrudService<Zatrudnienie, Integer> {
                 Optional<WymiarEtatu> wymEtatu =  wymiarEtatuRepo.findById( ((BigDecimal) ob[5]).toString() );
                 zat.setWymiarEtatu(wymEtatu.get());
                 zat.setDef0( ((BigDecimal) ob[6]).toString() );
+                zat.setSkKod( skRepo.findBySkId( Integer.valueOf( ((BigDecimal) ob[7]).toString() ) ).getSkKod() );
                 listZat.add(zat);
                 prac.setZatrudnienia(listZat);
             }

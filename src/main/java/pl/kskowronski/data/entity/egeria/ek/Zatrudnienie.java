@@ -117,6 +117,9 @@ public class Zatrudnienie {
     @Transient
     private String joName;
 
+    @Transient
+    private String skKod;
+
     public Zatrudnienie() {
     }
 
@@ -429,5 +432,13 @@ public class Zatrudnienie {
 
     public void setJoName(String joName) {
         this.joName = joName;
+    }
+
+    public String getSkKod() {
+        return skKod;
+    }
+
+    public void setSkKod(String skKod) {
+        this.skKod = skKod;
     }
 }
