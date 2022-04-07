@@ -151,12 +151,17 @@ public class WorkCardView extends Dialog {
         Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
         Style groupStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
 
+        final String[] skList = {""};
+        worker.getZatrudnienia().forEach( item -> {
+            skList[0] += item.getSkKod() + " ";
+        });
+
         PrintPreviewReport<HarmIndividual> report = new PrintPreviewReport<>();
         report.setItems(harm);
         report.getReportBuilder()
                 .addAutoText("+", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, groupStyle)
                 .setPrintBackgroundOnOddRows(true)
-                .setTitle("Karta Pracy: " + labNameWorker.getText() + " " + periodText.getPeriod())
+                .setTitle("Karta Pracy: " + labNameWorker.getText() + " " + periodText.getPeriod() +  " ( MPK: " + skList[0] + ")")
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setStyle(headerStyle).setWidth(15).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setStyle(headerStyle).setWidth(15).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setStyle(headerStyle).setWidth(30).build())
