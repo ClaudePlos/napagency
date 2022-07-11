@@ -20,15 +20,18 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 import org.vaadin.reports.PrintPreviewReport;
+import pl.kskowronski.data.entity.egeria.ek.SkladnikCzasowy;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HoursInDay;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HoursInMonth;
+import pl.kskowronski.data.service.egeria.ek.ComponentsInMonthService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HarmIndividualService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.views.componets.PeriodLayout;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +43,13 @@ public class WorkCardView extends Dialog {
     private HarmIndividualService harmIndividualService;
     private HoursInDayService hoursInDayService;
     private HoursInMonthService hoursInMonthService;
+    private ComponentsInMonthService componentsInMonthService;
 
     private PeriodLayout periodText = new PeriodLayout(1);
     private Grid<HarmIndividual> grid = new Grid<>(HarmIndividual.class, false);
     private Grid<HoursInDay> gridHoursInDay = new Grid<>(HoursInDay.class, false);
     private Grid<HoursInMonth> gridHoursInMonth = new Grid<>(HoursInMonth.class, false);
+    private Grid<SkladnikCzasowy> gridComponentsInMonth = new Grid<>(SkladnikCzasowy.class, false);
 
     private Pracownik worker;
 
@@ -53,18 +58,21 @@ public class WorkCardView extends Dialog {
     private List<HarmIndividual> harm = new ArrayList<>();
     private HorizontalLayout hAnchor = new HorizontalLayout();
 
-    public WorkCardView(HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, HoursInMonthService hoursInMonthService) {
+    public WorkCardView(HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, HoursInMonthService hoursInMonthService, ComponentsInMonthService componentsInMonthService) {
         this.harmIndividualService = harmIndividualService;
         this.hoursInDayService = hoursInDayService;
         this.hoursInMonthService = hoursInMonthService;
+        this.componentsInMonthService = componentsInMonthService;
         this.setWidth("1200px");
         this.setHeight("750px");
         grid.setWidthFull();
         grid.setHeight("680px");
         gridHoursInDay.setWidthFull();
-        gridHoursInDay.setHeight("370px");
+        gridHoursInDay.setHeight("300px");
         gridHoursInMonth.setWidthFull();
-        gridHoursInMonth.setHeight("290px");
+        gridHoursInMonth.setHeight("200px");
+        gridComponentsInMonth.setWidthFull();
+        gridComponentsInMonth.setHeight("150px");
 
         grid.addColumn(HarmIndividual::getHiType).setHeader("").setWidth("25px");
         grid.addColumn(HarmIndividual::getDay).setHeader("D").setWidth("25px");
@@ -125,9 +133,15 @@ public class WorkCardView extends Dialog {
             repPdf.openPopUp(harm);
         });
 
+
+        gridComponentsInMonth.addColumn(SkladnikCzasowy::getComponentName).setHeader("Nazwa Składnika").setWidth("135px");
+        gridComponentsInMonth.addColumn(SkladnikCzasowy::getSkczKwotaDod).setHeader("Kwota").setWidth("35px");
+        gridComponentsInMonth.addColumn(SkladnikCzasowy::getSkczDataOd).setHeader("Od").setWidth("35px");
+        gridComponentsInMonth.addColumn(SkladnikCzasowy::getSkczDataDo).setHeader("Do").setWidth("35px");
+
         add(new HorizontalLayout(periodText, labNameWorker, hAnchor//, butPDF
                         , hClose)
-                , new HorizontalLayout(grid, new VerticalLayout(gridHoursInDay, gridHoursInMonth))
+                , new HorizontalLayout(grid, new VerticalLayout(gridHoursInDay, gridHoursInMonth, gridComponentsInMonth))
         );
     }
 
@@ -144,6 +158,11 @@ public class WorkCardView extends Dialog {
         grid.setItems(harm);
         var hoursInMonth = hoursInMonthService.findAllForPeriodAndPrcId(periodText.getPeriod(), worker.getPrcId());
         gridHoursInMonth.setItems(hoursInMonth);
+        var componentsInMonth = componentsInMonthService.findAllForPeriodAndPrcId(worker.getPrcId()
+                , periodText.getFirstDayOfPeriod()
+                , periodText.getLastDayOfPeriod()
+        );
+        gridComponentsInMonth.setItems(componentsInMonth);
         generatePDF();
     }
 

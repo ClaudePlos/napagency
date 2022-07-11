@@ -23,6 +23,7 @@ import pl.kskowronski.data.entity.egeria.ek.Pracownik;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 import pl.kskowronski.data.service.admin.AgencyForLoginService;
 import pl.kskowronski.data.service.egeria.ckk.ClientService;
+import pl.kskowronski.data.service.egeria.ek.ComponentsInMonthService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HarmIndividualService;
 import pl.kskowronski.data.service.egeria.ek.ZatrudnienieService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
@@ -44,6 +45,7 @@ public class AgencyView extends VerticalLayout {
     private ClientService clientService;
     private ZatrudnienieService zatrudnienieService;
     private HarmIndividualService harmIndividualService;
+    private ComponentsInMonthService componentsInMonthService;
 
     private PeriodLayout periodText = new PeriodLayout(1);
     private Grid<Pracownik> grid = new Grid<>(Pracownik.class, false);
@@ -55,11 +57,12 @@ public class AgencyView extends VerticalLayout {
     private WorkCardView workCardView;
 
     public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, NapUserService napUserService, HoursInMonthService hoursInMonthService
-            , HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, AgencyForLoginService agencyForLoginService) {
+            , HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, AgencyForLoginService agencyForLoginService, ComponentsInMonthService componentsInMonthService) {
         this.clientService = clientService;
         this.zatrudnienieService = zatrudnienieService;
         this.harmIndividualService = harmIndividualService;
-        this.workCardView = new WorkCardView(this.harmIndividualService, hoursInDayService, hoursInMonthService);
+        this.componentsInMonthService = componentsInMonthService;
+        this.workCardView = new WorkCardView(this.harmIndividualService, hoursInDayService, hoursInMonthService, componentsInMonthService);
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var user  = napUserService.findByUsername(userDetails.getUsername());
