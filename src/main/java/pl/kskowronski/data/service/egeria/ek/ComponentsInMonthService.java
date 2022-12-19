@@ -31,7 +31,6 @@ public class ComponentsInMonthService extends CrudService<SkladnikCzasowy, Integ
             } else {
                 item.setComponentName( item.getSkczDskId().toString() );
             }
-
         });
         return components;
     }

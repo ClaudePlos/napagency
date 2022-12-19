@@ -64,5 +64,5 @@ docker run -p 8080:8080 napagency:latest
 ```
 k.skowronski: build on production 
 ```
-sudo docker build -t napagency .
-sudo docker run -p 8184:8181 napagency:latest
+sudo docker build -t nap-agency .
+sudo docker run --name nap-agency -d -p 8184:8181 nap-agency:latest
