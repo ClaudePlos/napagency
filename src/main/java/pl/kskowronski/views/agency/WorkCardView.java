@@ -4,7 +4,6 @@ package pl.kskowronski.views.agency;
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -15,7 +14,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
@@ -31,9 +29,10 @@ import pl.kskowronski.data.service.egeria.ek.graphics.HoursInDayService;
 import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.views.componets.PeriodLayout;
 
-import java.time.LocalDate;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @UIScope
@@ -180,7 +179,9 @@ public class WorkCardView extends Dialog {
         report.getReportBuilder()
                 .addAutoText("+", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, groupStyle)
                 .setPrintBackgroundOnOddRows(true)
-                .setTitle("Karta Pracy: " + labNameWorker.getText() + " " + periodText.getPeriod() +  " ( MPK: " + skList[0] + ")")
+                .setReportLocale(new Locale("pl", "PL"))
+                //.addAutoText("Karta żźćółśćą Pracy: " + labNameWorker.getText()+ " " + periodText.getPeriod() +  " ( MPK: " + skList[0] + ")", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, headerStyle)
+                .setTitle("Karta Pracy: " + translateToEn(labNameWorker.getText())+ " " + translateToEn(periodText.getPeriod()) +  " ( MPK: " + skList[0] + ")")
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setStyle(headerStyle).setWidth(15).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setStyle(headerStyle).setWidth(15).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setStyle(headerStyle).setWidth(30).build())
@@ -201,5 +202,27 @@ public class WorkCardView extends Dialog {
         gridHoursInDay.setItems(hours);
     }
 
+
+    private String translateToEn(String text) {
+        text = text.replace("ą", "a");
+        text = text.replace("ć", "c");
+        text = text.replace("ę", "e");
+        text = text.replace("ł", "l");
+        text = text.replace("ń", "n");
+        text = text.replace("ó", "o");
+        text = text.replace("ś", "s");
+        text = text.replace("ź", "z");
+        text = text.replace("ż", "z");
+        text = text.replace("Ą", "A");
+        text = text.replace("Ć", "C");
+        text = text.replace("Ę", "E");
+        text = text.replace("Ł", "L");
+        text = text.replace("Ń", "N");
+        text = text.replace("Ó", "O");
+        text = text.replace("Ś", "S");
+        text = text.replace("Ź", "Z");
+        text = text.replace("Ż", "Z");
+        return text;
+    }
 
 }
