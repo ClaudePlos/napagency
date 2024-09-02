@@ -149,7 +149,7 @@ public class AgencyView extends VerticalLayout {
         harmIndividualService.getHarmForWorkers(workers, periodText.getPeriod());
 
         PrintPreviewReport<HarmIndividual> reportCsv = new PrintPreviewReport<>();
-        reportCsv.setItems(harms);
+        //reportCsv.setItems(harms);
         reportCsv.getReportBuilder()
                 .setPrintColumnNames(false)
                 //.setReportLocale(new Locale("pl", "PL"))
