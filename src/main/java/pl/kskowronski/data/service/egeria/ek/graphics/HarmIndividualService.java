@@ -65,7 +65,7 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
                 h.setPrcNumer(w.getPrcNumer());
                 h.setPrcImie(w.getPrcImie());
                 h.setPrcNazwisko(w.getPrcNazwisko());
-                h.setSkKod(skList[0]);
+                h.setSkKod(skList[0].substring(0, skList.length-1));
                 h.setHiDateS(sdf.format(h.getHiDate()));
                 harms.add(h);
             });
@@ -78,5 +78,36 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
 
     public List<? extends HarmIndividual> getHarmForWorkers() {
         return harms;
+    }
+
+    public List<HarmIndividual> getHarmForWorkers2() {
+        return harms;
+    }
+
+    public String[][] parseListToArray(List<HarmIndividual> harms) {
+        // Tworzenie nowej tablicy dwuwymiarowej na podstawie rozmiaru listy
+        String[][] array = new String[harms.size()][];
+
+        // Wypełnienie tablicy danymi z listy obiektów Person
+        for (int i = 0; i < harms.size(); i++) {
+            HarmIndividual harm = harms.get(i);
+            array[i] = new String[] {
+                    String.valueOf(harm.getPrcNumer()),
+                    harm.getPrcNazwisko(),
+                    harm.getPrcImie(),
+                    harm.getSkKod(),
+                    harm.getHiDateS(),
+                    harm.getHiType(),
+                    harm.getDay(),
+                    harm.getHiNameHarm(),
+                    String.valueOf(harm.getHiHoursPlan()),
+                    String.valueOf(harm.getHiHoursOverworked()),
+                    harm.getAbsenceName(),
+                    harm.getHhFrom(),
+                    harm.getHhTo()
+            };
+        }
+
+        return array;
     }
 }

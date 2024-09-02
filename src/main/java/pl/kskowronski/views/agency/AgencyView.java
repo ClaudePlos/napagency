@@ -33,9 +33,12 @@ import pl.kskowronski.views.MainLayout;
 import pl.kskowronski.views.componets.PeriodLayout;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @PageTitle("Agency")
 @Route(value = "agency", layout = MainLayout.class)
@@ -60,7 +63,7 @@ public class AgencyView extends VerticalLayout {
     private WorkCardView workCardView;
 
     private HorizontalLayout h1 = new HorizontalLayout();
-    private Anchor anchorCsv = new Anchor();
+    private Anchor downloadLink = new Anchor("", "Pobierz CSV");
 
     public AgencyView(ClientService clientService, ZatrudnienieService zatrudnienieService, NapUserService napUserService, HoursInMonthService hoursInMonthService
             , HarmIndividualService harmIndividualService, HoursInDayService hoursInDayService, AgencyForLoginService agencyForLoginService, ComponentsInMonthService componentsInMonthService) {
@@ -117,12 +120,16 @@ public class AgencyView extends VerticalLayout {
 
         Button butExcel = new Button("Excel");
         butExcel.addClickListener( e -> {
-            h1.remove(anchorCsv);
             generateExcel();
         });
 
 
+
+        downloadLink.getElement().setAttribute("download", true);
+        downloadLink.setEnabled(false);
+
         h1.add(butExcel);
+
 
         add(new HorizontalLayout(periodText
                         , new Label("Agencja:"), listAgency, h1)
@@ -134,7 +141,7 @@ public class AgencyView extends VerticalLayout {
         selectAgency.setItems( agencyList );
         selectAgency.setItemLabelGenerator(Client::getKldNazwa);
         selectAgency.addValueChangeListener( e -> {
-            h1.remove(anchorCsv);
+            h1.remove(downloadLink);
             generateListWorkersForAgency();
         });
         return selectAgency;
@@ -145,34 +152,34 @@ public class AgencyView extends VerticalLayout {
         grid.setItems(workers);
     }
 
+
     private void generateExcel() {
         harmIndividualService.getHarmForWorkers(workers, periodText.getPeriod());
 
-        PrintPreviewReport<HarmIndividual> reportCsv = new PrintPreviewReport<>();
-        //reportCsv.setItems(harms);
-        reportCsv.getReportBuilder()
-                .setPrintColumnNames(false)
-                //.setReportLocale(new Locale("pl", "PL"))
-                //.addAutoText("Karta żźćółśćą Pracy: " + labNameWorker.getText()+ " " + periodText.getPeriod() +  " ( MPK: " + skList[0] + ")", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, headerStyle)
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcNumer", Integer.class).setTitle("prcNumer").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcNazwisko", String.class).setTitle("prcNazwisko").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcImie", String.class).setTitle("prcImie").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("skKod", String.class).setTitle("skKod").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiDateS", String.class).setTitle("Dzień").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhFrom", String.class).setTitle("Od").build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhTo", String.class).setTitle("Do").build())
-        ;
-        StreamResource csv = reportCsv.getStreamResource("karta_" + "_"+periodText.getPeriod() +".csv"
-                , harmIndividualService::getHarmForWorkers, PrintPreviewReport.Format.CSV);
 
-        anchorCsv = new Anchor(csv, "Pobierz");
-        h1.add(anchorCsv);
+        // Tworzenie StreamResource do wygenerowania pliku CSV
+        StreamResource resource = new StreamResource("Karty_" + periodText.getPeriod() +".csv", () -> {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            try (PrintWriter writer = new PrintWriter(stream, true, StandardCharsets.UTF_8)) {
+                // Nagłówki CSV
+                String[] headers = {"Numer", "Nazwisko", "Imię","MPK","Dzień","Typ","D","Zmiana","Plan","Wykonanie","Nazwa","Od","Do"};
+                writer.println(String.join(",", headers));
+
+                // Dane CSV
+                String[][] data = harmIndividualService.parseListToArray(harmIndividualService.getHarmForWorkers2());
+
+                for (String[] row : data) {
+                    writer.println(String.join(";", row).replace("null",""));
+                }
+            }
+
+            return new ByteArrayInputStream(stream.toByteArray());
+        });
+
+
+        downloadLink.setHref(resource);
+        downloadLink.setEnabled(true);
+        h1.add(downloadLink);
     }
 
     private void generatePDF() {
