@@ -3,9 +3,11 @@ package pl.kskowronski.data.service.egeria.ek.graphics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.artur.helpers.CrudService;
+import pl.kskowronski.data.entity.egeria.ek.Pracownik;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HoursInDay;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,6 +21,7 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
     private HoursInDayService hoursInDayService;
 
     private List<HarmIndividual> harm = new ArrayList<>();
+    private List<HarmIndividual> harms = new ArrayList<>();
 
     public HarmIndividualService(@Autowired HarmIndividualRepo repo, TypeOfAbsenceRepo typeOfAbsenceRepo, HoursInDayService hoursInDayService) {
         this.repo = repo;
@@ -47,8 +50,33 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
        return harm;
     }
 
-    public List<? extends HarmIndividual> getHarmForWorker() {
+    public void getHarmForWorkers(List<Pracownik> workers, String periodText){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
+        final String[] skList = {""};
+        harms.clear();
+
+        workers.forEach( w -> {
+            skList[0] = "";
+            w.getZatrudnienia().forEach( z -> {
+                skList[0] += z.getSkKod() + " ";
+            });
+            getHarmForWorker(w.getPrcId(), periodText).forEach( h -> {
+                h.setPrcNumer(w.getPrcNumer());
+                h.setPrcImie(w.getPrcImie());
+                h.setPrcNazwisko(w.getPrcNazwisko());
+                h.setSkKod(skList[0]);
+                h.setHiDateS(sdf.format(h.getHiDate()));
+                harms.add(h);
+            });
+        });
+    }
+
+    public List<? extends HarmIndividual> getHarmForWorker() {
         return harm;
+    }
+
+    public List<? extends HarmIndividual> getHarmForWorkers() {
+        return harms;
     }
 }

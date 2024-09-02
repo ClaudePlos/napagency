@@ -1,10 +1,7 @@
 package pl.kskowronski.views.agency;
 
 import ar.com.fdvs.dj.domain.AutoText;
-import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
-import ar.com.fdvs.dj.domain.builders.StyleBuilder;
-import ar.com.fdvs.dj.domain.constants.Font;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -36,9 +33,7 @@ import pl.kskowronski.views.MainLayout;
 import pl.kskowronski.views.componets.PeriodLayout;
 
 import javax.annotation.security.RolesAllowed;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -121,8 +116,8 @@ public class AgencyView extends VerticalLayout {
         });
 
         Button butExcel = new Button("Excel");
-        h1.remove(anchorCsv);
         butExcel.addClickListener( e -> {
+            h1.remove(anchorCsv);
             generateExcel();
         });
 
@@ -139,6 +134,7 @@ public class AgencyView extends VerticalLayout {
         selectAgency.setItems( agencyList );
         selectAgency.setItemLabelGenerator(Client::getKldNazwa);
         selectAgency.addValueChangeListener( e -> {
+            h1.remove(anchorCsv);
             generateListWorkersForAgency();
         });
         return selectAgency;
@@ -150,51 +146,30 @@ public class AgencyView extends VerticalLayout {
     }
 
     private void generateExcel() {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
-        Style groupStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
-
-        final String[] skList = {""};
-        harms.clear();
-
-        workers.forEach( w -> {
-            skList[0] = "";
-            w.getZatrudnienia().forEach( z -> {
-                skList[0] += z.getSkKod() + " ";
-            });
-            harmIndividualService.getHarmForWorker(w.getPrcId(), periodText.getPeriod()).forEach( h -> {
-                h.setPrcNumer(w.getPrcNumer());
-                h.setPrcImie(w.getPrcImie());
-                h.setPrcNazwisko(w.getPrcNazwisko());
-                h.setSkKod(skList[0]);
-                h.setHiDateS(sdf.format(h.getHiDate()));
-                harms.add(h);
-            });
-        });
+        harmIndividualService.getHarmForWorkers(workers, periodText.getPeriod());
 
         PrintPreviewReport<HarmIndividual> reportCsv = new PrintPreviewReport<>();
         reportCsv.setItems(harms);
         reportCsv.getReportBuilder()
-                .setPrintBackgroundOnOddRows(false)
-                .setReportLocale(new Locale("pl", "PL"))
+                .setPrintColumnNames(false)
+                //.setReportLocale(new Locale("pl", "PL"))
                 //.addAutoText("Karta żźćółśćą Pracy: " + labNameWorker.getText()+ " " + periodText.getPeriod() +  " ( MPK: " + skList[0] + ")", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, headerStyle)
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcNumer", Integer.class).setTitle("prcNumer").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcNazwisko", String.class).setTitle("prcNazwisko").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcImie", String.class).setTitle("prcImie").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("skKod", String.class).setTitle("skKod").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiDateS", String.class).setTitle("Dzień").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setStyle(headerStyle).setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setStyle(headerStyle).setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setStyle(headerStyle).setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setStyle(headerStyle).setWidth(30).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").setStyle(headerStyle).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhFrom", String.class).setTitle("Od").setWidth(15).build())
-                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhTo", String.class).setTitle("Do").setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcNumer", Integer.class).setTitle("prcNumer").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcNazwisko", String.class).setTitle("prcNazwisko").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("prcImie", String.class).setTitle("prcImie").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("skKod", String.class).setTitle("skKod").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiDateS", String.class).setTitle("Dzień").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhFrom", String.class).setTitle("Od").build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhTo", String.class).setTitle("Do").build())
         ;
         StreamResource csv = reportCsv.getStreamResource("karta_" + "_"+periodText.getPeriod() +".csv"
-                , harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.CSV);
+                , harmIndividualService::getHarmForWorkers, PrintPreviewReport.Format.CSV);
 
         anchorCsv = new Anchor(csv, "Pobierz");
         h1.add(anchorCsv);
