@@ -30,7 +30,9 @@ import pl.kskowronski.data.service.egeria.ek.graphics.HoursInMonthService;
 import pl.kskowronski.views.componets.PeriodLayout;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -133,6 +135,8 @@ public class WorkCardView extends Dialog {
         });
 
 
+
+
         gridComponentsInMonth.addColumn(SkladnikCzasowy::getComponentName).setHeader("Nazwa Składnika").setWidth("135px");
         gridComponentsInMonth.addColumn(SkladnikCzasowy::getSkczKwotaDod).setHeader("Kwota").setWidth("35px");
         gridComponentsInMonth.addColumn(SkladnikCzasowy::getSkczDataOd).setHeader("Od").setWidth("35px");
@@ -163,6 +167,7 @@ public class WorkCardView extends Dialog {
         );
         gridComponentsInMonth.setItems(componentsInMonth);
         generatePDF();
+        generateExcel();
     }
 
     private void generatePDF() {
@@ -191,10 +196,42 @@ public class WorkCardView extends Dialog {
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hhFrom", String.class).setTitle("Od").setWidth(15).build())
                 .addColumn(ColumnBuilder.getNew().setColumnProperty("hhTo", String.class).setTitle("Do").setWidth(15).build())
         ;
-        StreamResource pdf = report.getStreamResource("karta.pdf", harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.PDF);
+        StreamResource pdf = report.getStreamResource("karta_" + translateToEn(labNameWorker.getText()) + "_"+translateToEn(periodText.getPeriod()) +".pdf"
+                , harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.PDF);
         Anchor anchor = new Anchor(pdf, "PDF");
         anchor.setTarget("_blank");
         hAnchor.add(anchor);
+    }
+
+    private void generateExcel() {
+        Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
+        Style groupStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
+
+        final String[] skList = {""};
+        worker.getZatrudnienia().forEach( item -> {
+            skList[0] += item.getSkKod() + " ";
+        });
+
+        PrintPreviewReport<HarmIndividual> reportCsv = new PrintPreviewReport<>();
+        reportCsv.setItems(harm);
+        reportCsv.getReportBuilder()
+                .setPrintBackgroundOnOddRows(true)
+                .setReportLocale(new Locale("pl", "PL"))
+                //.addAutoText("Karta żźćółśćą Pracy: " + labNameWorker.getText()+ " " + periodText.getPeriod() +  " ( MPK: " + skList[0] + ")", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 200, headerStyle)
+                .setTitle("Karta Pracy: " + translateToEn(labNameWorker.getText())+ " " + translateToEn(periodText.getPeriod()) +  " ( MPK: " + skList[0] + ")")
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setStyle(headerStyle).setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setStyle(headerStyle).setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setStyle(headerStyle).setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setStyle(headerStyle).setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setStyle(headerStyle).setWidth(30).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").setStyle(headerStyle).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhFrom", String.class).setTitle("Od").setWidth(15).build())
+                .addColumn(ColumnBuilder.getNew().setColumnProperty("hhTo", String.class).setTitle("Do").setWidth(15).build())
+        ;
+        StreamResource csv = reportCsv.getStreamResource("karta_" + translateToEn(labNameWorker.getText()) + "_"+translateToEn(periodText.getPeriod()) +".csv"
+        , harmIndividualService::getHarmForWorker, PrintPreviewReport.Format.CSV);
+        Anchor anchorCsv = new Anchor(csv, "CSV");
+        hAnchor.add(anchorCsv);
     }
 
     private void getHoursForDay( Integer hiId) {
