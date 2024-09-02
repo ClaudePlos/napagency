@@ -2,6 +2,7 @@ package pl.kskowronski.data.entity.egeria.ek.graphics;
 
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -48,6 +49,21 @@ public class HarmIndividual {
 
     @Transient
     private String hhTo;
+
+    @Transient
+    private Integer prcNumer;
+
+    @Transient
+    private String prcNazwisko;
+
+    @Transient
+    private String skKod;
+
+    @Transient
+    private String prcImie;
+
+    @Transient
+    private String hiDateS;
 
     public Integer getHiId() {
         return hiId;
@@ -151,5 +167,45 @@ public class HarmIndividual {
 
     public void setHhTo(String hhTo) {
         this.hhTo = hhTo;
+    }
+
+    public Integer getPrcNumer() {
+        return prcNumer;
+    }
+
+    public void setPrcNumer(Integer prcNumer) {
+        this.prcNumer = prcNumer;
+    }
+
+    public String getPrcNazwisko() {
+        return prcNazwisko;
+    }
+
+    public void setPrcNazwisko(String prcNazwisko) {
+        this.prcNazwisko = prcNazwisko;
+    }
+
+    public String getPrcImie() {
+        return prcImie;
+    }
+
+    public void setPrcImie(String prcImie) {
+        this.prcImie = prcImie;
+    }
+
+    public String getSkKod() {
+        return skKod;
+    }
+
+    public void setSkKod(String skKod) {
+        this.skKod = skKod;
+    }
+
+    public String getHiDateS() {
+        return hiDateS;
+    }
+
+    public void setHiDateS(String hiDateS) {
+        this.hiDateS = hiDateS;
     }
 }
