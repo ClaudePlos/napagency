@@ -162,7 +162,7 @@ public class AgencyView extends VerticalLayout {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             try (PrintWriter writer = new PrintWriter(stream, true, StandardCharsets.UTF_8)) {
                 // Nagłówki CSV
-                String[] headers = {"Numer;Nazwisko;Imię;MPK;Dzień;Typ;D;Zmiana;Plan;Wykonanie;Nazwa;Od;Do"};
+                String[] headers = {"Numer;Nazwisko;Imię;Pesel;MPK;Dzień;Typ;D;Zmiana;Plan;Wykonanie;Nazwa;Od;Do"};
                 writer.println(String.join(";", headers));
 
                 // Dane CSV

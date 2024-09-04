@@ -65,7 +65,8 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
                 h.setPrcNumer(w.getPrcNumer());
                 h.setPrcImie(w.getPrcImie());
                 h.setPrcNazwisko(w.getPrcNazwisko());
-                h.setSkKod(skList[0].substring(0, skList.length-1));
+                h.setPesel(w.getPrcPesel());
+                h.setSkKod(skList[0].substring(0, skList[0].length()-1));
                 h.setHiDateS(sdf.format(h.getHiDate()));
                 harms.add(h);
             });
@@ -95,6 +96,7 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
                     String.valueOf(harm.getPrcNumer()),
                     harm.getPrcNazwisko(),
                     harm.getPrcImie(),
+                    harm.getPesel(),
                     harm.getSkKod(),
                     harm.getHiDateS(),
                     harm.getHiType(),
