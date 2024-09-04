@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.artur.helpers.CrudService;
 import pl.kskowronski.data.entity.egeria.ek.Pracownik;
+import pl.kskowronski.data.entity.egeria.ek.SkladnikCzasowy;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HarmIndividual;
 import pl.kskowronski.data.entity.egeria.ek.graphics.HoursInDay;
+import pl.kskowronski.data.service.egeria.ek.ComponentsInMonthService;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -17,14 +20,16 @@ import java.util.List;
 public class HarmIndividualService extends CrudService<HarmIndividual, Integer> {
 
     private HarmIndividualRepo repo;
+    private ComponentsInMonthService componentsInMonthService;
     private TypeOfAbsenceRepo typeOfAbsenceRepo;
     private HoursInDayService hoursInDayService;
 
     private List<HarmIndividual> harm = new ArrayList<>();
     private List<HarmIndividual> harms = new ArrayList<>();
 
-    public HarmIndividualService(@Autowired HarmIndividualRepo repo, TypeOfAbsenceRepo typeOfAbsenceRepo, HoursInDayService hoursInDayService) {
+    public HarmIndividualService(@Autowired HarmIndividualRepo repo, TypeOfAbsenceRepo typeOfAbsenceRepo, HoursInDayService hoursInDayService, ComponentsInMonthService componentsInMonthService) {
         this.repo = repo;
+        this.componentsInMonthService = componentsInMonthService;
         this.typeOfAbsenceRepo = typeOfAbsenceRepo;
         this.hoursInDayService = hoursInDayService;
     }
@@ -61,6 +66,13 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
             w.getZatrudnienia().forEach( z -> {
                 skList[0] += z.getSkKod() + " ";
             });
+
+            YearMonth month =  YearMonth.parse(periodText);
+            LocalDate firstDayOfMonth = month.atDay(1);
+            LocalDate lastDayOfMonth = month.atEndOfMonth();
+
+            var componentsInMonth = getAdditionalPay(w.getPrcId(), firstDayOfMonth, lastDayOfMonth);
+
             getHarmForWorker(w.getPrcId(), periodText).forEach( h -> {
                 h.setPrcNumer(w.getPrcNumer());
                 h.setPrcImie(w.getPrcImie());
@@ -68,9 +80,26 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
                 h.setPesel(w.getPrcPesel());
                 h.setSkKod(skList[0].substring(0, skList[0].length()-1));
                 h.setHiDateS(sdf.format(h.getHiDate()));
+
+                if (h.getDay().equals("1")) {
+                    componentsInMonth.forEach( a -> {
+                        if (a.getComponentName().equals("Nagroda uznaniowa")) {
+                            h.setBonus(a.getSkczKwotaDod().toString());
+                        }
+                    });
+                }
+
                 harms.add(h);
             });
         });
+    }
+
+    private List<SkladnikCzasowy> getAdditionalPay(Integer prcId, LocalDate dateFrom, LocalDate dateTo) {
+        var componentsInMonth = componentsInMonthService.findAllForPeriodAndPrcId( prcId
+                , dateFrom
+                , dateTo
+        );
+        return componentsInMonth;
     }
 
     public List<? extends HarmIndividual> getHarmForWorker() {
@@ -106,7 +135,8 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
                     String.valueOf(harm.getHiHoursOverworked()),
                     harm.getAbsenceName(),
                     harm.getHhFrom(),
-                    harm.getHhTo()
+                    harm.getHhTo(),
+                    harm.getBonus()
             };
         }
 

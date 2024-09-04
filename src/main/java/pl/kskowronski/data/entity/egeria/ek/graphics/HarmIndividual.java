@@ -68,6 +68,9 @@ public class HarmIndividual {
     @Transient
     private String hiDateS;
 
+    @Transient
+    private String bonus;
+
     public Integer getHiId() {
         return hiId;
     }
@@ -218,5 +221,13 @@ public class HarmIndividual {
 
     public void setPesel(String pesel) {
         this.pesel = pesel;
+    }
+
+    public String getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(String bonus) {
+        this.bonus = bonus;
     }
 }
