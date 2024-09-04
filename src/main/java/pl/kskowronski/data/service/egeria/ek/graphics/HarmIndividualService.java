@@ -81,7 +81,7 @@ public class HarmIndividualService extends CrudService<HarmIndividual, Integer> 
                 h.setSkKod(skList[0].substring(0, skList[0].length()-1));
                 h.setHiDateS(sdf.format(h.getHiDate()));
 
-                if (h.getDay().equals("1")) {
+                if (h.getDay().equals(String.valueOf(lastDayOfMonth.getDayOfMonth()))) {
                     componentsInMonth.forEach( a -> {
                         if (a.getComponentName().equals("Nagroda uznaniowa")) {
                             h.setBonus(a.getSkczKwotaDod().toString());
