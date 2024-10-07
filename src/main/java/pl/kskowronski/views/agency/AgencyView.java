@@ -201,8 +201,8 @@ public class AgencyView extends VerticalLayout {
                     .addColumn(ColumnBuilder.getNew().setColumnProperty("hiType", String.class).setTitle("Typ").setWidth(15).build())
                     .addColumn(ColumnBuilder.getNew().setColumnProperty("day", String.class).setTitle("D").setWidth(15).build())
                     .addColumn(ColumnBuilder.getNew().setColumnProperty("hiNameHarm", String.class).setTitle("Zmiana").setWidth(30).build())
-                    .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Integer.class).setTitle("Plan").setWidth(30).build())
-                    .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Integer.class).setTitle("Wykonanie").setWidth(30).build())
+                    .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursPlan", Double.class).setTitle("Plan").setWidth(30).build())
+                    .addColumn(ColumnBuilder.getNew().setColumnProperty("hiHoursOverworked", Double.class).setTitle("Wykonanie").setWidth(30).build())
                     .addColumn(ColumnBuilder.getNew().setColumnProperty("absenceName", String.class).setTitle("").build())
 
             ;

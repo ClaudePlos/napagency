@@ -27,10 +27,10 @@ public class HarmIndividual {
     private Date hiDate;
 
     @Column(name = "HI_GODZINY")
-    private Integer hiHoursPlan;
+    private Double hiHoursPlan;
 
     @Column(name = "HI_PRZEPRACOWANE")
-    private Integer hiHoursOverworked;
+    private Double hiHoursOverworked;
 
     @Column(name = "HI_ZMIANA")
     private String hiNameHarm;
@@ -103,19 +103,19 @@ public class HarmIndividual {
         this.hiRdaId = hiRdaId;
     }
 
-    public Integer getHiHoursPlan() {
+    public Double getHiHoursPlan() {
         return hiHoursPlan;
     }
 
-    public void setHiHoursPlan(Integer hiHoursPlan) {
+    public void setHiHoursPlan(Double hiHoursPlan) {
         this.hiHoursPlan = hiHoursPlan;
     }
 
-    public Integer getHiHoursOverworked() {
+    public Double getHiHoursOverworked() {
         return hiHoursOverworked;
     }
 
-    public void setHiHoursOverworked(Integer hiHoursOverworked) {
+    public void setHiHoursOverworked(Double hiHoursOverworked) {
         this.hiHoursOverworked = hiHoursOverworked;
     }
 
