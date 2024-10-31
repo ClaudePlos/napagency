@@ -58,7 +58,7 @@ public class ZatrudnienieService extends CrudService<Zatrudnienie, Integer> {
         sql += "where (COALESCE(zat_data_do, to_date('2099', 'YYYY')) >= to_date('" + okres + "', 'YYYY-MM')\n" +
                 "and zat_data_zmiany <= last_day(to_date('" + okres + "', 'YYYY-MM')))\n" +
                 "and zat_typ_umowy = " + typeContract + "\n" +
-                "and zat_frm_id = 300325 \n" +
+                "and zat_frm_id in (300325,300333) \n" +
                 "and zat_um_id in (select um_id from knt_umowy where um_kl_kod_ma_strone = " + klKodAgency + ")\n" +
                 "and zat_prc_id = prc_id\n";
         sql += " order by prc_nazwisko, prc_imie";
